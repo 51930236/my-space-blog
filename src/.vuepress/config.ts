@@ -6,7 +6,7 @@ export default defineUserConfig({
   // 部署到 GitHub Pages 时的路径
   // 如果你的仓库名是 yourname.github.io，设为 '/'
   // 如果仓库名是 repo-name，设为 '/repo-name/'
-  base: '/',
+  base: '/my-space-blog/',
 
   // 网站语言
   lang: 'zh-CN',
