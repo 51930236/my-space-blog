@@ -21,6 +21,8 @@ jobs:
 
       - name: 设置 pnpm
         uses: pnpm/action-setup@v6
+        with:
+          version: 10.18.2
 
       - name: 设置 Node.js
         uses: actions/setup-node@v6
