@@ -33,7 +33,9 @@ jobs:
       - name: 安装依赖
         run: |
           corepack enable
-          pnpm install --no-verify-lockfile-age # ⭐ 添加此参数
+             pnpm install
+        env:
+          PNPM_VERIFY_LOCKFILE_AGE: 0 # ⭐ 通过环境变量禁用检查
 
       - name: 构建文档
         env:
