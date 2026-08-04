@@ -1,0 +1,3 @@
+# pnpm-workspace.yaml
+minimumReleaseAge: 0
+trustLockfile: true
