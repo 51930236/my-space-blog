@@ -1,6 +1,0 @@
-# pnpm-workspace.yaml
-minimumReleaseAge: 0
-trustLockfile: true
-allowBuilds:
-  esbuild: true
-  "@parcel/watcher": true

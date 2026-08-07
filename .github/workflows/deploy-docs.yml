@@ -1,4 +1,4 @@
-name: 部署文档
+name: 部署 Hexo 文档
 
 on:
   push:
@@ -17,11 +17,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: 设置 pnpm
-        uses: pnpm/action-setup@v6
-        with:
-          version: 10.18.2
-
       - name: 设置 Node.js
         uses: actions/setup-node@v6
         with:
@@ -31,18 +26,14 @@ jobs:
 
       - name: 安装依赖
         run: |
-          corepack enable
           pnpm ci
 
-      - name: 构建文档
-        env:
-          NODE_OPTIONS: --max_old_space_size=4096
-          BASE: / # ⭐ 加这一行
-        run: |-
-          pnpm run docs:build
-          touch src/.vuepress/dist/.nojekyll
+      - name: 清理并生成静态文件
+        run: |
+          npx hexo clean
+          npx hexo generate   # 生成到 public 目录
 
-      - name: 部署文档
+      - name: 部署文档部署到 gh-pages 分支
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: gh-pages
