@@ -122,7 +122,7 @@ home_banner:
   # 是否启用首页横幅
   enable: true
   # 横幅样式: static (静态) 或 fixed (固定，有视差滚动效果)
-  style: fixed
+  style: static
   # 横幅背景图片
   image:
     light: /images/wallhaven-wqery6-light.webp # 亮色模式图片
