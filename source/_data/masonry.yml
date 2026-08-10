@@ -1,0 +1,12 @@
+- image: https://picsum.photos/id/848/2000/1333
+  width: 1920
+  height: 1080
+  exif: true
+  title: 图片标题
+  description: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec euismod
+
+- image: https://picsum.photos/id/848/2000/1333
+  width: 2000
+  height: 1333
+  title: Lorem ipsum
+  description: Lorem ipsum dolor sit amet

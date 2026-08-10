@@ -10,7 +10,7 @@
 # 文档: https://redefine-docs.ohevan.com/basic/info
 info:
   # 网站主标题
-  title: Theme Redefine
+  title: 深街孤影
   # 网站副标题
   subtitle: Redefine Your Hexo Journey.
   # 作者名称
@@ -48,12 +48,12 @@ global:
   fonts:
     # 中文字体配置
     chinese:
-      enable: true # 是否启用自定义中文字体
+      enable: false # 是否启用自定义中文字体
       family: Noto Sans SC # 字体族名称，例如 'Noto Sans SC'
       url: https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap # 字体CSS文件的URL (通常用于加载Google Fonts或本地字体)
     # 英文字体配置
     english:
-      enable: true # 是否启用自定义英文字体
+      enable: false # 是否启用自定义英文字体
       family: Farsan # 字体族名称，例如 'Inter'
       url: https://fonts.googleapis.com/css2?family=Farsan&display=swap # 字体CSS文件的URL
     # 标题字体配置 (应用于导航栏、侧边栏等)
@@ -81,7 +81,7 @@ global:
     site_uv: true # 是否显示网站总访客数 (Unique Visitor)
     post_pv: true # 是否显示每篇文章的阅读量
   # 是否启用单页体验 (使用 swup.js 实现无刷新加载，类似 Pjax)
-  single_page: true
+  single_page: false
   # 加载动画 (Preloader) 设置
   preloader:
     enable: false
@@ -122,16 +122,30 @@ home_banner:
   # 是否启用首页横幅
   enable: true
   # 横幅样式: static (静态) 或 fixed (固定，有视差滚动效果)
-  style: static
+  style: fixed
   # 横幅背景图片
   image:
     light: /images/wallhaven-wqery6-light.webp # 亮色模式图片
     dark: /images/wallhaven-wqery6-dark.webp # 暗色模式图片
   # 横幅主标题
-  title: Theme Redefine
+  title: 深街孤影的日常博客
   # 横幅副标题 (支持打字机效果)
   subtitle:
-    text: [] # 副标题文本数组，可设置多句轮流显示，例如: ['句子1', '句子2']
+    text: [
+        '欲买桂花同载酒，终不似，少年游。',
+        '保持热爱，奔赴下一场山海。',
+        '醉后不知天在水，满船清梦压星河。',
+        '春风得意马蹄疾，一日看尽长安花。',
+        S
+        '当时明月在，曾照彩云归。',
+        '桃李春风一杯酒，江湖夜雨十年灯。',
+        '最是人间留不住，朱颜辞镜花辞树。',
+        '且行且忘且随风，且行且看且从容。',
+        '宠辱不惊，看庭前花开花落；去留无意，望天上云卷云舒。',
+        '愿你历尽千帆，归来仍是少年。',
+        '保持热爱，奔赴山海。',
+        '嘘，我正在努力加载中...',
+      ] # 副标题文本数组，可设置多句轮流显示，例如: ['句子1', '句子2']
     hitokoto: # 一言 (Hitokoto) 接口配置
       enable: false # 是否启用一言API (启用后会覆盖text数组)
       show_author: false # 是否显示一言的作者
@@ -169,7 +183,7 @@ home_banner:
       - icon: twitter
         url:
       - icon: email
-        url: you@example.com
+        url: 17626515332@163.com
       - icon: telegram
         url:
       - icon: /images/custom-icon.svg # 也支持自定义图片路径作为图标
@@ -201,9 +215,21 @@ navbar:
     Home: # 链接显示名称
       path: / # 链接路径
       icon: fa-regular fa-house # 图标 (可留空)
-    # Archives: # 示例：归档页面
-    #   path: /archives
-    #   icon: fa-regular fa-archive
+    Categories:
+      icon: fa-solid fa-folder #图标
+      path: /categories/ #链接
+    Tags: #取名随意
+      icon: fa-solid fa-tags #图标
+      path: /tags/ #链接
+    相册: #取名随意
+      icon: fa-solid fa-image #图标
+      path: /masonry/
+    Bookmarks: #取名随意
+      icon: fa-solid fa-bookmark #图标
+      path: /bookmarks/
+    Archives: # 示例：归档页面
+      path: /archives
+      icon: fa-regular fa-archive
     # Status: # 示例：外部链接
     #   path: https://status.ohevan.com/
     #   icon: fa-regular fa-chart-bar
@@ -225,7 +251,7 @@ navbar:
   # 需要安装插件: npm i hexo-generator-searchdb
   # 详见: https://github.com/theme-next/hexo-generator-searchdb
   search:
-    enable: false # 是否启用
+    enable: true # 是否启用
     preload: true # 是否在页面加载时预加载搜索数据 (提升搜索速度)
 # 导航栏 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< 结束
 
@@ -240,15 +266,15 @@ home:
     announcement: # 公告文本，显示在侧边栏顶部
     show_on_mobile: true # 是否在移动端的滑出菜单中显示侧边栏导航链接
     links: # 侧边栏链接 (通常作为导航栏的补充或替代)
-      # Archives:
-      #   path: /archives
-      #   icon: fa-regular fa-archive
-      # Tags:
-      #   path: /tags
-      #   icon: fa-regular fa-tags
-      # Categories:
-      #   path: /categories
-      #   icon: fa-regular fa-folder
+      Archives:
+        path: /archives
+        icon: fa-regular fa-archive
+      Tags:
+        path: /tags
+        icon: fa-regular fa-tags
+      Categories:
+        path: /categories
+        icon: fa-regular fa-folder
       # ...... # 你可以继续添加更多链接
   # 文章日期显示格式
   article_date_format: auto # auto (自动), relative (相对时间，如“3天前”), YYYY-MM-DD 等
@@ -293,7 +319,7 @@ articles:
   # 作者标签 (可按文章数自动分级或手动指定)
   author_label:
     enable: true # 是否启用
-    auto: false # 是否根据文章数量自动添加等级标签 (如 Lv1, Lv2)
+    auto: true # 是否根据文章数量自动添加等级标签 (如 Lv1, Lv2)
     list: [] # 手动指定作者标签列表，例如: ['博主', '运维']
   # 代码块设置
   code_block:
@@ -309,8 +335,8 @@ articles:
   # 文章目录 (Table of Contents)
   toc:
     enable: true # 是否启用
-    max_depth: 3 # 目录抓取的最大标题层级 (h1-h6)
-    number: false # 是否自动为目录项添加编号 (如 1. 1.1)
+    max_depth: 6 # 目录抓取的最大标题层级 (h1-h6)
+    number: true # 是否自动为目录项添加编号 (如 1. 1.1)
     expand: true # 是否默认展开所有目录项
     init_open: true # 页面加载时目录是否默认展开
   # 版权声明
@@ -319,9 +345,9 @@ articles:
     default: cc_by_nc_sa # 默认许可证: cc_by_nc_sa (知识共享), cc_by_nd, cc_by_nc, cc_by_sa, cc_by, all_rights_reserved (保留所有权利), public_domain (公有领域)
   # 图片懒加载 (Lazyload)，仅当图片进入视口时才加载
   lazyload: true
-  # Pangu.js (自动在中文字符和英文字符、数字之间添加空格，提升排版美观度)
+  # Pangu.js (自动在中文字符和英文字符、数字之间添加空格，提升排版美观度) npm install pangu --save-exact
   # 详见: https://github.com/vinta/pangu.js
-  pangu_js: false
+  pangu_js: true
   # 文章推荐 (需安装插件: npm install nodejieba)
   # 移植自 hexo-theme-volantis，基于关键词相似度推荐
   recommendation:
@@ -397,7 +423,7 @@ footer:
   # 页脚中间的图标 (支持 Font Awesome 代码)
   icon: '<i class="fa-solid fa-heart fa-beat" style="--fa-animation-duration: 0.5s; color: #f54545"></i>'
   # 网站起始运行时间 (用于计算运行时长)
-  start: 2022/8/17 11:45:14
+  start: 2026/8/7 11:45:14
   # 是否显示站点统计信息 (文章总数和总字数)
   statistics: true
   # 页脚自定义信息 (可填写HTML代码，会显示在版权信息下方)
@@ -450,7 +476,7 @@ plugins:
   # 需安装插件: npm i hexo-filter-mermaid-diagrams
   # 详见: https://mermaid.js.org/
   mermaid:
-    enable: false # 是否启用
+    enable: true # 是否启用
     version: '11.4.1' # Mermaid 版本号
     theme: # 主题配色
       light: 'default' # 亮色模式主题
@@ -461,7 +487,7 @@ plugins:
 # 文档: https://redefine-docs.ohevan.com/page_templates
 page_templates:
   # 友情链接 (Friends) 页面每行显示的列数
-  friends_column: 2
+  friends_column: 3
   # 标签 (Tags) 页面样式
   tags_style: blur # blur (毛玻璃效果), cloud (标签云效果)
   # 瀑布流 (Masonry) 页面分批加载设置
