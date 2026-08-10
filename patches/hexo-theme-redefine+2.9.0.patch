@@ -1,0 +1,118 @@
+diff --git a/node_modules/hexo-theme-redefine/scripts/filters/encrypt.js b/node_modules/hexo-theme-redefine/scripts/filters/encrypt.js
+index e4bcc20..cb82a00 100644
+--- a/node_modules/hexo-theme-redefine/scripts/filters/encrypt.js
++++ b/node_modules/hexo-theme-redefine/scripts/filters/encrypt.js
+@@ -125,8 +125,7 @@ hexo.extend.filter.register(
+     data.content += `<link href="${hexo.config.root}css/hbe.style.css" rel="stylesheet" type="text/css"><script data-swup-reload-script type="module" src="${hexo.config.root}js/plugins/hbe.js"></script>
+ <script data-swup-reload-script type="module">
+ import {initHBE} from "${hexo.config.root}js/plugins/hbe.js";
+-  log.info(ensurePrefix("hexo-blog-encrypt: loaded."));
+-    initHBE();
++  initHBE();
+ </script>
+ `;
+     data.excerpt = data.more = config.abstract;
+diff --git a/node_modules/hexo-theme-redefine/scripts/filters/lib/hbe.default.js b/node_modules/hexo-theme-redefine/scripts/filters/lib/hbe.default.js
+index ed95b54..00add87 100644
+--- a/node_modules/hexo-theme-redefine/scripts/filters/lib/hbe.default.js
++++ b/node_modules/hexo-theme-redefine/scripts/filters/lib/hbe.default.js
+@@ -3,10 +3,12 @@ const hbeTheme = `
+   <script id="hbeData" type="hbeData" data-hmacdigest="{{hbeHmacDigest}}">{{hbeEncryptedData}}</script>
+   <div class="hbe hbe-content">
+     <div class="hbe hbe-input hbe-input-default">
+-      <input class="hbe hbe-input-field hbe-input-field-default" type="password" id="hbePass">
+-      <label class="hbe hbe-input-label hbe-input-label-default" for="hbePass">
+-        <span class="hbe hbe-input-label-content hbe-input-label-content-default">{{hbeMessage}}</span>
+-      </label>
++      <form onsubmit="return false;">
++        <input class="hbe hbe-input-field hbe-input-field-default" type="password" id="hbePass">
++        <label class="hbe hbe-input-label hbe-input-label-default" for="hbePass">
++          <span class="hbe hbe-input-label-content hbe-input-label-content-default">{{hbeMessage}}</span>
++        </label>
++      </form>
+     </div>
+   </div>
+ </div>
+diff --git a/node_modules/hexo-theme-redefine/source/js/plugins/hbe.js b/node_modules/hexo-theme-redefine/source/js/plugins/hbe.js
+index 40c8d26..11ce9a9 100644
+--- a/node_modules/hexo-theme-redefine/source/js/plugins/hbe.js
++++ b/node_modules/hexo-theme-redefine/source/js/plugins/hbe.js
+@@ -1,6 +1,5 @@
+ export function initHBE() {
+   const cryptoObj = window.crypto || window.msCrypto;
+-  const storage = window.localStorage;
+ 
+   const storageName = "hexo-blog-encrypt:#" + window.location.pathname;
+   const keySalt = textToArray("too young too simple");
+@@ -251,52 +250,6 @@ export function initHBE() {
+   }
+ 
+   function hbeLoader() {
+-    const oldStorageData = JSON.parse(storage.getItem(storageName));
+-
+-    if (oldStorageData) {
+-      console.log(
+-        `Password got from localStorage(${storageName}): `,
+-        oldStorageData,
+-      );
+-
+-      const sIv = hexToArray(oldStorageData.iv).buffer;
+-      const sDk = oldStorageData.dk;
+-      const sHmk = oldStorageData.hmk;
+-
+-      cryptoObj.subtle
+-        .importKey(
+-          "jwk",
+-          sDk,
+-          {
+-            name: "AES-CBC",
+-            length: 256,
+-          },
+-          true,
+-          ["decrypt"],
+-        )
+-        .then((dkCK) => {
+-          cryptoObj.subtle
+-            .importKey(
+-              "jwk",
+-              sHmk,
+-              {
+-                name: "HMAC",
+-                hash: "SHA-256",
+-                length: 256,
+-              },
+-              true,
+-              ["verify"],
+-            )
+-            .then((hmkCK) => {
+-              decrypt(dkCK, sIv, hmkCK).then((result) => {
+-                if (!result) {
+-                  storage.removeItem(storageName);
+-                }
+-              });
+-            });
+-        });
+-    }
+-
+     mainElement.addEventListener("keydown", async (event) => {
+       if (event.isComposing || event.key === "Enter") {
+         const password = document.getElementById("hbePass").value;
+@@ -307,18 +260,6 @@ export function initHBE() {
+ 
+         decrypt(decryptKey, iv, hmacKey).then((result) => {
+           console.log(`Decrypt result: ${result}`);
+-          if (result) {
+-            cryptoObj.subtle.exportKey("jwk", decryptKey).then((dk) => {
+-              cryptoObj.subtle.exportKey("jwk", hmacKey).then((hmk) => {
+-                const newStorageData = {
+-                  dk: dk,
+-                  iv: arrayBufferToHex(iv),
+-                  hmk: hmk,
+-                };
+-                storage.setItem(storageName, JSON.stringify(newStorageData));
+-              });
+-            });
+-          }
+         });
+       }
+     });
