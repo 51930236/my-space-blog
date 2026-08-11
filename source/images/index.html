@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>单图切换明暗主题</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: system-ui, sans-serif;
+      }
+
+      .scene {
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+      }
+      .scene img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        transition: filter 0.7s ease;
+      }
+
+      /* 染色层：渐变区分天空和湖面色调 */
+      .night-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          180deg,
+          #5a7a9a 0%,
+          /* 天空：灰蓝，低饱和 */ #4a7aaa 30%,
+          /* 山腰：纯蓝 */ #3a9aba 65%,
+          /* 湖面：青蓝，偏亮 */ #2a8aaa 100% /* 底部：深蓝 */
+        );
+        mix-blend-mode: color;
+        opacity: 0;
+        transition: opacity 0.7s ease;
+        pointer-events: none;
+      }
+
+      /* 亮色 */
+      .theme-light img {
+        filter: none;
+      }
+
+      /* 暗色：原图只做轻微调整，主要靠 color blend 层压暗+染色 */
+      .theme-dark img {
+        filter: brightness(0.72) contrast(1.15) saturate(0.85);
+      }
+      .theme-dark .night-overlay {
+        opacity: 0.6;
+      }
+
+      .content {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+        gap: 24px;
+        position: relative;
+        z-index: 1;
+      }
+      .toggle-btn {
+        padding: 12px 28px;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        cursor: pointer;
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(6px);
+        color: #fff;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        transition: background 0.3s;
+      }
+      .toggle-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="scene theme-light" id="sceneBox">
+      <img src="./wallhaven-wqery6-light.webp" alt="背景" />
+      <div class="night-overlay"></div>
+    </div>
+
+    <div class="content">
+      <h1>单张图片切换明暗主题</h1>
+      <p>img + color blend 渐变染色</p>
+      <button class="toggle-btn" id="toggleBtn">切换暗色主题</button>
+    </div>
+
+    <script>
+      const sceneBox = document.getElementById('sceneBox');
+      const toggleBtn = document.getElementById('toggleBtn');
+      let isDark = false;
+
+      toggleBtn.addEventListener('click', () => {
+        isDark = !isDark;
+        sceneBox.className = isDark ? 'scene theme-dark' : 'scene theme-light';
+        toggleBtn.textContent = isDark ? '切换亮色主题' : '切换暗色主题';
+      });
+    </script>
+  </body>
+</html>

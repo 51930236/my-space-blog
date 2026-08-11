@@ -1,3 +1,207 @@
+diff --git a/node_modules/hexo-theme-redefine/layout/pages/home/home-background.ejs b/node_modules/hexo-theme-redefine/layout/pages/home/home-background.ejs
+index a0c2e98..582e0fa 100644
+--- a/node_modules/hexo-theme-redefine/layout/pages/home/home-background.ejs
++++ b/node_modules/hexo-theme-redefine/layout/pages/home/home-background.ejs
+@@ -24,10 +24,84 @@
+     .home-banner-background {
+         filter: blur(15px);
+     }
++    .night-overlay {
++        position: absolute;
++        inset: 0;
++        background: linear-gradient(
++            180deg,
++            #5a7a9a 0%,
++            /* 天空：灰蓝，低饱和 */ #4a7aaa 30%,
++            /* 山腰：纯蓝 */ #3a9aba 65%,
++            /* 湖面：青蓝，偏亮 */ #2a8aaa 100% /* 底部：深蓝 */
++        );
++        mix-blend-mode: color;
++        opacity: 0;
++        transition: opacity 0.7s ease;
++        pointer-events: none;
++    }
++    .dark .night-overlay {
++        opacity: 0.6;
++    }
++    .dark .home-banner-background img {
++        filter: brightness(0.72) contrast(1.15) saturate(0.85);
++    }
++    .home-banner-background .slideshow-wrapper {
++        position: absolute;
++        inset: 0;
++    }
++    .home-banner-background .slideshow-img {
++        position: absolute;
++        inset: 0;
++        width: 100%;
++        height: 100%;
++        object-fit: cover;
++        opacity: 0;
++        transition: opacity 1s ease;
++    }
++    .home-banner-background .slideshow-img.active {
++        opacity: 1;
++    }
+ </style>
+ 
+ <div class="home-banner-background transition-fade fixed top-0 left-0 w-screen h-screen scale-125 sm:scale-110 box-border will-change-transform bg-cover">
++    <% if (theme.home_banner.image.custom_style) { %>
++    <% const slideshow = theme.home_banner.image.slideshow || {}; %>
++    <% if (slideshow.enable && slideshow.list && slideshow.list.length > 0) { %>
++        <div class="slideshow-wrapper" data-interval="<%= slideshow.interval || 10 %>">
++        <% slideshow.list.forEach(function(img) { %>
++            <img src="<%- url_for(img) %>" alt="" class="slideshow-img w-full h-full object-cover">
++        <% }) %>
++        </div>
++    <% } else { %>
++        <img src="<%- url_for(theme.home_banner.image.light) %>" alt="home-banner-background" class="w-full h-full object-cover">
++    <% } %>
++    <div class="night-overlay"></div>
++<% } else { %>
+     <img src="<%- url_for(theme.home_banner.image.light) %>" alt="home-banner-background" class="w-full h-full object-cover dark:hidden">
+     <img src="<%- url_for(theme.home_banner.image.dark) %>" alt="home-banner-background" class="w-full h-full object-cover hidden dark:block">
++<% } %>
+ </div>
++<% if (theme.home_banner.image.custom_style) { %>
++    <% const ss = theme.home_banner.image.slideshow || {}; %>
++    <% if (ss.enable && ss.list && ss.list.length > 0) { %>
++    <script data-swup-reload-script>
++    (function() {
++        var c = document.querySelector('.home-banner-background');
++        if (!c) return;
++        var w = c.querySelector('.slideshow-wrapper');
++        if (!w) return;
++        var imgs = w.querySelectorAll('.slideshow-img');
++        if (imgs.length < 2) return;
++        var interval = parseInt(w.getAttribute('data-interval')) * 1000 || 10000;
++        var current = 0;
++        imgs[0].classList.add('active');
++        setInterval(function() {
++            imgs[current].classList.remove('active');
++            current = (current + 1) % imgs.length;
++            imgs[current].classList.add('active');
++        }, interval);
++    })();
++    </script>
++    <% } %>
++<% } %>
+ 
+diff --git a/node_modules/hexo-theme-redefine/layout/pages/home/home-banner.ejs b/node_modules/hexo-theme-redefine/layout/pages/home/home-banner.ejs
+index 052310b..6c5d3ce 100644
+--- a/node_modules/hexo-theme-redefine/layout/pages/home/home-banner.ejs
++++ b/node_modules/hexo-theme-redefine/layout/pages/home/home-banner.ejs
+@@ -25,18 +25,106 @@
+         .home-article-sticky-label {
+             backdrop-filter: none !important;
+         }
++        .night-overlay {
++            position: absolute;
++            inset: 0;
++            background: linear-gradient(
++                180deg,
++                #5a7a9a 0%,
++                /* 天空：灰蓝，低饱和 */ #4a7aaa 30%,
++                /* 山腰：纯蓝 */ #3a9aba 65%,
++                /* 湖面：青蓝，偏亮 */ #2a8aaa 100% /* 底部：深蓝 */
++            );
++            mix-blend-mode: color;
++            opacity: 0;
++            transition: opacity 0.7s ease;
++            pointer-events: none;
++        }
++        .dark .night-overlay {
++            opacity: 0.6;
++        }
++        .dark .home-banner-background img {
++            filter: brightness(0.72) contrast(1.15) saturate(0.85);
++        }
++        .home-banner-background .slideshow-wrapper {
++            position: absolute;
++            inset: 0;
++        }
++        .home-banner-background .slideshow-img {
++            position: absolute;
++            inset: 0;
++            width: 100%;
++            height: 100%;
++            object-fit: cover;
++            opacity: 0;
++            transition: opacity 1s ease;
++        }
++        .home-banner-background .slideshow-img.active {
++            opacity: 1;
++        }
+     </style>
+     <div class="home-banner-background transition-fade fixed top-0 left-0 w-screen h-screen scale-125 sm:scale-110 box-border will-change-transform bg-cover">
+-        <img src="<%- url_for(theme.home_banner.image.light) %>" alt="home-banner-background" class="w-full h-full object-cover dark:hidden">
+-        <img src="<%- url_for(theme.home_banner.image.dark) %>" alt="home-banner-background" class="w-full h-full object-cover hidden dark:block">
++    <% if (theme.home_banner.image.custom_style) { %>
++    <% const slideshow = theme.home_banner.image.slideshow || {}; %>
++    <% if (slideshow.enable && slideshow.list && slideshow.list.length > 0) { %>
++        <div class="slideshow-wrapper" data-interval="<%= slideshow.interval || 10 %>">
++        <% slideshow.list.forEach(function(img) { %>
++            <img src="<%- url_for(img) %>" alt="" class="slideshow-img w-full h-full object-cover">
++        <% }) %>
++        </div>
++    <% } else { %>
++        <img src="<%- url_for(theme.home_banner.image.light) %>" alt="home-banner-background" class="w-full h-full object-cover">
++    <% } %>
++    <div class="night-overlay"></div>
++<% } else { %>
++    <img src="<%- url_for(theme.home_banner.image.light) %>" alt="home-banner-background" class="w-full h-full object-cover dark:hidden">
++    <img src="<%- url_for(theme.home_banner.image.dark) %>" alt="home-banner-background" class="w-full h-full object-cover hidden dark:block">
++<% } %>
+     </div>
+ <% } %>
++<% if (theme.home_banner.image.custom_style) { %>
++    <% const ss = theme.home_banner.image.slideshow || {}; %>
++    <% if (ss.enable && ss.list && ss.list.length > 0) { %>
++    <script data-swup-reload-script>
++    (function() {
++        var c = document.querySelector('.home-banner-background');
++        if (!c) return;
++        var w = c.querySelector('.slideshow-wrapper');
++        if (!w) return;
++        var imgs = w.querySelectorAll('.slideshow-img');
++        if (imgs.length < 2) return;
++        var interval = parseInt(w.getAttribute('data-interval')) * 1000 || 10000;
++        var current = 0;
++        imgs[0].classList.add('active');
++        setInterval(function() {
++            imgs[current].classList.remove('active');
++            current = (current + 1) % imgs.length;
++            imgs[current].classList.add('active');
++        }, interval);
++    })();
++    </script>
++    <% } %>
++<% } %>
+ 
+ <div class="home-banner-container flex justify-center items-center transition-fade relative">
+     <% if (theme.home_banner.style !== "fixed") {%>
+     <div class="home-banner-background transition-fade absolute top-0 left-0 w-screen h-screen scale-125 sm:scale-110 box-border will-change-transform bg-cover">
+-        <img src="<%- url_for(theme.home_banner.image.light) %>" alt="home-banner-background" class="w-full h-full object-cover dark:hidden">
+-        <img src="<%- url_for(theme.home_banner.image.dark) %>" alt="home-banner-background" class="w-full h-full object-cover hidden dark:block">
++    <% if (theme.home_banner.image.custom_style) { %>
++    <% const slideshow = theme.home_banner.image.slideshow || {}; %>
++    <% if (slideshow.enable && slideshow.list && slideshow.list.length > 0) { %>
++        <div class="slideshow-wrapper" data-interval="<%= slideshow.interval || 10 %>">
++        <% slideshow.list.forEach(function(img) { %>
++            <img src="<%- url_for(img) %>" alt="" class="slideshow-img w-full h-full object-cover">
++        <% }) %>
++        </div>
++    <% } else { %>
++        <img src="<%- url_for(theme.home_banner.image.light) %>" alt="home-banner-background" class="w-full h-full object-cover">
++    <% } %>
++    <div class="night-overlay"></div>
++<% } else { %>
++    <img src="<%- url_for(theme.home_banner.image.light) %>" alt="home-banner-background" class="w-full h-full object-cover dark:hidden">
++    <img src="<%- url_for(theme.home_banner.image.dark) %>" alt="home-banner-background" class="w-full h-full object-cover hidden dark:block">
++<% } %>
+     </div>
+     <% } %>
+     <div class="content mt-8 flex flex-col justify-center items-center transition-fade-down">
 diff --git a/node_modules/hexo-theme-redefine/scripts/filters/encrypt.js b/node_modules/hexo-theme-redefine/scripts/filters/encrypt.js
 index e4bcc20..cb82a00 100644
 --- a/node_modules/hexo-theme-redefine/scripts/filters/encrypt.js
