@@ -232,6 +232,9 @@ export function initHBE() {
           }
         });
 
+        // rebuild TOC from decrypted content
+        rebuildTOC();
+
         window.dispatchEvent(new CustomEvent("redefine:page:refresh"));
 
         // trigger event
@@ -266,6 +269,45 @@ export function initHBE() {
   }
 
   hbeLoader();
+
+  function rebuildTOC() {
+    const content = document.querySelector('.article-content-container .article-content');
+    if (!content) return;
+
+    const headings = content.querySelectorAll('h1, h2, h3, h4, h5, h6');
+    if (headings.length === 0) return;
+
+    const existing = document.querySelector('.toc-content-container');
+    if (existing) existing.remove();
+
+    var tocHtml = '<div class="post-toc-wrap"><div class="post-toc">';
+    tocHtml += '<div class="toc-title">' + (window.__theme_i18n_toc || '目录') + '</div>';
+    var titleEl = document.querySelector('.article-title-regular, .article-title-cover');
+    var pageTitle = titleEl ? titleEl.textContent.trim() : '';
+    tocHtml += '<div class="page-title">' + pageTitle + '</div>';
+    tocHtml += '<ul class="nav post-toc">';
+
+    headings.forEach(function (h) {
+      var id = h.id;
+      if (!id) return;
+      var level = parseInt(h.tagName.substring(1));
+      var text = h.textContent;
+      tocHtml += '<li class="nav-item toc-level-' + level + '">';
+      tocHtml += '<a class="nav-link" href="#' + id + '">' + text + '</a>';
+      tocHtml += '</li>';
+    });
+
+    tocHtml += '</ul></div></div>';
+
+    var container = document.createElement('div');
+    container.className = 'toc-content-container';
+    container.innerHTML = tocHtml;
+
+    var postContainer = document.querySelector('.post-page-container');
+    if (postContainer) {
+      postContainer.appendChild(container);
+    }
+  }
 }
 
 // initHBE();
