@@ -1,6 +1,5 @@
 export function initHBE() {
   const cryptoObj = window.crypto || window.msCrypto;
-  const storage = window.localStorage;
 
   const storageName = "hexo-blog-encrypt:#" + window.location.pathname;
   const keySalt = textToArray("too young too simple");
@@ -251,52 +250,6 @@ export function initHBE() {
   }
 
   function hbeLoader() {
-    const oldStorageData = JSON.parse(storage.getItem(storageName));
-
-    if (oldStorageData) {
-      console.log(
-        `Password got from localStorage(${storageName}): `,
-        oldStorageData,
-      );
-
-      const sIv = hexToArray(oldStorageData.iv).buffer;
-      const sDk = oldStorageData.dk;
-      const sHmk = oldStorageData.hmk;
-
-      cryptoObj.subtle
-        .importKey(
-          "jwk",
-          sDk,
-          {
-            name: "AES-CBC",
-            length: 256,
-          },
-          true,
-          ["decrypt"],
-        )
-        .then((dkCK) => {
-          cryptoObj.subtle
-            .importKey(
-              "jwk",
-              sHmk,
-              {
-                name: "HMAC",
-                hash: "SHA-256",
-                length: 256,
-              },
-              true,
-              ["verify"],
-            )
-            .then((hmkCK) => {
-              decrypt(dkCK, sIv, hmkCK).then((result) => {
-                if (!result) {
-                  storage.removeItem(storageName);
-                }
-              });
-            });
-        });
-    }
-
     mainElement.addEventListener("keydown", async (event) => {
       if (event.isComposing || event.key === "Enter") {
         const password = document.getElementById("hbePass").value;
@@ -307,18 +260,6 @@ export function initHBE() {
 
         decrypt(decryptKey, iv, hmacKey).then((result) => {
           console.log(`Decrypt result: ${result}`);
-          if (result) {
-            cryptoObj.subtle.exportKey("jwk", decryptKey).then((dk) => {
-              cryptoObj.subtle.exportKey("jwk", hmacKey).then((hmk) => {
-                const newStorageData = {
-                  dk: dk,
-                  iv: arrayBufferToHex(iv),
-                  hmk: hmk,
-                };
-                storage.setItem(storageName, JSON.stringify(newStorageData));
-              });
-            });
-          }
         });
       }
     });
