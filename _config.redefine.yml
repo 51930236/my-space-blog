@@ -127,10 +127,10 @@ home_banner:
   image:
     light: /images/bg/wallhaven-wqery6-light.webp # 亮色模式图片
     dark: /images/bg/wallhaven-wqery6-dark.webp # 暗色模式图片
-    custom_style: false # 自定义单图模式，暗色模式自动染色（启用后只使用 light 图片，忽略 dark）
+    custom_style: true # 自定义单图模式，暗色模式自动染色（启用后只使用 light 图片，忽略 dark）
     # 幻灯片切换（custom_style 为 true 时生效）
     slideshow:
-      enable: false # 是否启用定时切换背景图
+      enable: true # 是否启用定时切换背景图
       interval: 10 # 切换间隔（秒）
       list: [
         '/images/bg/1.webp', # 亮色模式图片
