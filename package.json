@@ -28,7 +28,8 @@
     "hexo-server": "^3.0.0",
     "hexo-theme-redefine": "^2.9.0",
     "hexo-wordcount": "^6.0.1",
-    "pangu": "9.1.0"
+    "pangu": "9.1.0",
+    "postinstall": "^0.11.2"
   },
   "devDependencies": {
     "patch-package": "^8.0.1"

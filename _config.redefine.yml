@@ -133,11 +133,11 @@ home_banner:
       enable: true # 是否启用定时切换背景图
       interval: 10 # 切换间隔（秒）
       list: [
-        '/images/bg/1.webp', # 亮色模式图片
-        '/images/bg/2.webp', # 暗色模式图片
-        '/images/bg/3.webp', # 亮色模式图片
-        '/images/bg/4.webp', # 暗色模式图片
-      ] # 背景图列表
+          '/images/bg/1.webp', # 亮色模式图片
+          '/images/bg/2.webp', # 暗色模式图片
+          '/images/bg/3.webp', # 亮色模式图片
+          '/images/bg/4.webp', # 暗色模式图片
+        ] # 背景图列表
   # 横幅主标题
   title: 深街孤影的日常博客
   # 横幅副标题 (支持打字机效果)
@@ -232,8 +232,10 @@ navbar:
         技术分享: /categories/技术分享/
         生活随笔: /categories/生活随笔/
         思考感悟: /categories/思考感悟/
+        日常工作: /categories/日常工作/
         财务: /categories/财务/
         工具: /categories/工具/
+
     Tags: #取名随意
       icon: fa-solid fa-tags #图标
       path: /tags/ #链接
