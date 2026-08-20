@@ -203,10 +203,10 @@ index 052310b..6c5d3ce 100644
      <% } %>
      <div class="content mt-8 flex flex-col justify-center items-center transition-fade-down">
 diff --git a/node_modules/hexo-theme-redefine/scripts/filters/encrypt.js b/node_modules/hexo-theme-redefine/scripts/filters/encrypt.js
-index e4bcc20..cb82a00 100644
+index e4bcc20..cc9f43a 100644
 --- a/node_modules/hexo-theme-redefine/scripts/filters/encrypt.js
 +++ b/node_modules/hexo-theme-redefine/scripts/filters/encrypt.js
-@@ -125,8 +125,7 @@ hexo.extend.filter.register(
+@@ -125,11 +125,11 @@ hexo.extend.filter.register(
      data.content += `<link href="${hexo.config.root}css/hbe.style.css" rel="stylesheet" type="text/css"><script data-swup-reload-script type="module" src="${hexo.config.root}js/plugins/hbe.js"></script>
  <script data-swup-reload-script type="module">
  import {initHBE} from "${hexo.config.root}js/plugins/hbe.js";
@@ -215,7 +215,12 @@ index e4bcc20..cb82a00 100644
 +  initHBE();
  </script>
  `;
-     data.excerpt = data.more = config.abstract;
+-    data.excerpt = data.more = config.abstract;
++    // 不覆盖 excerpt，保留原始摘要，首页正常显示
++    // data.excerpt = data.more = config.abstract;
+ 
+     return data;
+   },
 diff --git a/node_modules/hexo-theme-redefine/scripts/filters/lib/hbe.default.js b/node_modules/hexo-theme-redefine/scripts/filters/lib/hbe.default.js
 index ed95b54..00add87 100644
 --- a/node_modules/hexo-theme-redefine/scripts/filters/lib/hbe.default.js
