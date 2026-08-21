@@ -7,7 +7,7 @@
     "clean": "hexo clean",
     "deploy": "hexo deploy",
     "server": "hexo server",
-    "dev": "hexo server",
+    "dev": "npx hexo clean && hexo server",
     "commit": "git add . && git cz",
     "postinstall": "patch-package",
     "prepare": "husky"

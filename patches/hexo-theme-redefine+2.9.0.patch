@@ -202,11 +202,24 @@ index 052310b..6c5d3ce 100644
      </div>
      <% } %>
      <div class="content mt-8 flex flex-col justify-center items-center transition-fade-down">
+diff --git a/node_modules/hexo-theme-redefine/layout/pages/post/toc.ejs b/node_modules/hexo-theme-redefine/layout/pages/post/toc.ejs
+index 0d0d9df..2e4de39 100644
+--- a/node_modules/hexo-theme-redefine/layout/pages/post/toc.ejs
++++ b/node_modules/hexo-theme-redefine/layout/pages/post/toc.ejs
+@@ -3,7 +3,7 @@
+ 		<div class="toc-title"><%- __('toc') %></div>
+ 		<div class="page-title"><%= page.title %></div>
+ 		<%- toc(
+-                page.content,
++                page.encrypt ? page.origin : page.content,
+                 {
+                     class: 'nav',
+                     list_number: theme.articles.toc.number,
 diff --git a/node_modules/hexo-theme-redefine/scripts/filters/encrypt.js b/node_modules/hexo-theme-redefine/scripts/filters/encrypt.js
-index e4bcc20..cc9f43a 100644
+index e4bcc20..d2011e4 100644
 --- a/node_modules/hexo-theme-redefine/scripts/filters/encrypt.js
 +++ b/node_modules/hexo-theme-redefine/scripts/filters/encrypt.js
-@@ -125,11 +125,11 @@ hexo.extend.filter.register(
+@@ -125,11 +125,13 @@ hexo.extend.filter.register(
      data.content += `<link href="${hexo.config.root}css/hbe.style.css" rel="stylesheet" type="text/css"><script data-swup-reload-script type="module" src="${hexo.config.root}js/plugins/hbe.js"></script>
  <script data-swup-reload-script type="module">
  import {initHBE} from "${hexo.config.root}js/plugins/hbe.js";
@@ -216,6 +229,8 @@ index e4bcc20..cc9f43a 100644
  </script>
  `;
 -    data.excerpt = data.more = config.abstract;
++    // 加密文章隐藏目录和切换按钮（CSS 在 JS 运行前生效）
++    data.content = `<style id="hbe-toc-hide">.toc-content-container,.page-aside-toggle{display:none!important}</style>` + data.content;
 +    // 不覆盖 excerpt，保留原始摘要，首页正常显示
 +    // data.excerpt = data.more = config.abstract;
  
@@ -242,3 +257,91 @@ index ed95b54..00add87 100644
      </div>
    </div>
  </div>
+diff --git a/node_modules/hexo-theme-redefine/source/js/build/layouts/toc.js b/node_modules/hexo-theme-redefine/source/js/build/layouts/toc.js
+index 56ac354..625f090 100644
+--- a/node_modules/hexo-theme-redefine/source/js/build/layouts/toc.js
++++ b/node_modules/hexo-theme-redefine/source/js/build/layouts/toc.js
+@@ -1,2 +1,2 @@
+-import{initTocToggle as e}from"../tools/tocToggle.js";import{getStyleStatus as t}from"../state/styleStatus.js";let n=null,i=!1;export function initTOC({signal:o}={}){o&&(e=>{!i&&e&&(i=!0,window.addEventListener("scroll",(()=>{n?.updateActiveTOCLink()}),{signal:e}))})(o);const r=document.querySelector(".toc-content-container");if(!r)return n=null,null;const c=r.querySelectorAll(".post-toc li"),s=e();if(0===c.length)return s.hideToggle(),r.remove(),document.querySelectorAll(".toc-marker").forEach((e=>{e.remove()})),n=null,null;const l={navItems:c,navLinks:r.querySelectorAll(".post-toc li a.nav-link"),updateActiveTOCLink(){if(!Array.isArray(l.sections))return;let e=l.sections.findIndex((e=>e&&e.getBoundingClientRect().top-100>0));-1===e?e=l.sections.length-1:e>0&&e--,this.activateTOCLink(e)},registerTOCScroll(){l.sections=[...l.navLinks].map((e=>document.getElementById(decodeURI(e.getAttribute("href")).replace("#",""))))},activateTOCLink(e){const t=l.navLinks[e];if(!t||t.classList.contains("active-current"))return;r.querySelectorAll(".active").forEach((e=>{e.classList.remove("active","active-current")})),t.classList.add("active","active-current");const n=r.getBoundingClientRect().top,i=r.offsetHeight>window.innerHeight?(r.offsetHeight-window.innerHeight)/2:0,o=t.getBoundingClientRect().top-n-Math.max(document.documentElement.clientHeight,window.innerHeight||0)/2+t.offsetHeight/2-i,c=r.scrollTop+o;r.scrollTo({top:c,behavior:"smooth"})},showTOCAside(){const openHandle=()=>{const e=t(),n="isOpenPageAside";e&&e.hasOwnProperty(n)?s.pageAsideHandleOfTOC(e[n]):s.pageAsideHandleOfTOC(!0)},e="init_open";theme.articles.toc.hasOwnProperty(e)?theme.articles.toc[e]?openHandle():s.pageAsideHandleOfTOC(!1):openHandle()}};return l.showTOCAside(),l.registerTOCScroll(),l.updateActiveTOCLink(),n=l,l}
++import{initTocToggle as e}from"../tools/tocToggle.js";import{getStyleStatus as t}from"../state/styleStatus.js";let n=null,i=!1;export function initTOC({signal:o}={}){o&&(e=>{!i&&e&&(i=!0,window.addEventListener("scroll",(()=>{n?.updateActiveTOCLink()}),{signal:e}))})(o);const r=document.querySelector(".toc-content-container");if(!r)return n=null,null;const c=r.querySelectorAll(".post-toc li"),s=e();if(0===c.length)return s.hideToggle(),document.getElementById("hexo-blog-encrypt")||(r.remove(),document.querySelectorAll(".toc-marker").forEach((e=>{e.remove()}))),n=null,null;const l={navItems:c,navLinks:r.querySelectorAll(".post-toc li a.nav-link"),updateActiveTOCLink(){if(!Array.isArray(l.sections))return;let e=l.sections.findIndex((e=>e&&e.getBoundingClientRect().top-100>0));-1===e?e=l.sections.length-1:e>0&&e--,this.activateTOCLink(e)},registerTOCScroll(){l.sections=[...l.navLinks].map((e=>document.getElementById(decodeURI(e.getAttribute("href")).replace("#",""))))},activateTOCLink(e){const t=l.navLinks[e];if(!t||t.classList.contains("active-current"))return;r.querySelectorAll(".active").forEach((e=>{e.classList.remove("active","active-current")})),t.classList.add("active","active-current");const n=r.getBoundingClientRect().top,i=r.offsetHeight>window.innerHeight?(r.offsetHeight-window.innerHeight)/2:0,o=t.getBoundingClientRect().top-n-Math.max(document.documentElement.clientHeight,window.innerHeight||0)/2+t.offsetHeight/2-i,c=r.scrollTop+o;r.scrollTo({top:c,behavior:"smooth"})},showTOCAside(){const openHandle=()=>{const e=t(),n="isOpenPageAside";e&&e.hasOwnProperty(n)?s.pageAsideHandleOfTOC(e[n]):s.pageAsideHandleOfTOC(!0)},e="init_open";theme.articles.toc.hasOwnProperty(e)?theme.articles.toc[e]?openHandle():s.pageAsideHandleOfTOC(!1):openHandle()}};return l.showTOCAside(),l.registerTOCScroll(),l.updateActiveTOCLink(),n=l,l}
+ //# sourceMappingURL=toc.js.map
+\ No newline at end of file
+diff --git a/node_modules/hexo-theme-redefine/source/js/layouts/toc.js b/node_modules/hexo-theme-redefine/source/js/layouts/toc.js
+index 4a4fb2a..d11833c 100644
+--- a/node_modules/hexo-theme-redefine/source/js/layouts/toc.js
++++ b/node_modules/hexo-theme-redefine/source/js/layouts/toc.js
+@@ -35,10 +35,13 @@ export function initTOC({ signal } = {}) {
+ 
+   if (navItems.length === 0) {
+     tocToggle.hideToggle();
+-    tocContainer.remove();
+-    document.querySelectorAll(".toc-marker").forEach((elem) => {
+-      elem.remove();
+-    });
++    // 加密文章：不删除容器，解密后需要恢复。非加密文章：删除容器
++    if (!document.getElementById("hexo-blog-encrypt")) {
++      tocContainer.remove();
++      document.querySelectorAll(".toc-marker").forEach((elem) => {
++        elem.remove();
++      });
++    }
+     tocState = null;
+     return null;
+   }
+diff --git a/node_modules/hexo-theme-redefine/source/js/plugins/hbe.js b/node_modules/hexo-theme-redefine/source/js/plugins/hbe.js
+index 40c8d26..206aff7 100644
+--- a/node_modules/hexo-theme-redefine/source/js/plugins/hbe.js
++++ b/node_modules/hexo-theme-redefine/source/js/plugins/hbe.js
+@@ -17,6 +17,11 @@ export function initHBE() {
+   const encryptedData = dataElement.innerText;
+   const HmacDigist = dataElement.dataset["hmacdigest"];
+ 
++  // 加密文章初始状态：强制隐藏目录和切换按钮（使用内联 JS 确保优先级最高）
++  document.querySelectorAll(".toc-content-container, .page-aside-toggle").forEach((el) => {
++    el.style.setProperty("display", "none", "important");
++  });
++
+   function hexToArray(s) {
+     return new Uint8Array(
+       s.match(/[\da-f]{2}/gi).map((h) => {
+@@ -233,6 +238,40 @@ export function initHBE() {
+           }
+         });
+ 
++        // 解密成功后显示目录和切换按钮
++        // 1. 移除注入的 CSS 隐藏样式
++        const hideStyle = document.getElementById("hbe-toc-hide");
++        if (hideStyle) {
++          hideStyle.remove();
++        }
++        // 2. 移除 JS 内联的 !important 样式
++        document.querySelectorAll(".toc-content-container, .page-aside-toggle").forEach((el) => {
++          el.style.removeProperty("display");
++        });
++        // 3. 直接设置显示状态，确保目录和切换按钮可见
++        const tocContainer = document.querySelector(".toc-content-container");
++        if (tocContainer) {
++          tocContainer.style.display = "";
++        }
++        const toggleBar = document.querySelector(".page-aside-toggle");
++        if (toggleBar) {
++          toggleBar.style.display = "";
++          // 将图标类添加到内层 <i> 元素，与外层 <li> 区分，避免图标重复
++          const toggleIcon = toggleBar.querySelector("i");
++          if (toggleIcon) {
++            toggleIcon.className = "fa-regular fa-indent";
++          }
++        }
++        // 4. 添加 show-toc / has-toc 类，与主题样式匹配
++        const postPageContainer = document.querySelector(".post-page-container");
++        if (postPageContainer) {
++          postPageContainer.classList.add("show-toc");
++        }
++        const mainContent = document.querySelector(".main-content");
++        if (mainContent) {
++          mainContent.classList.add("has-toc");
++        }
++        // 5. 触发重新初始化，让 TOC 滚动高亮生效
+         window.dispatchEvent(new CustomEvent("redefine:page:refresh"));
+ 
+         // trigger event
