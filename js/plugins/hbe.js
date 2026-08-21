@@ -17,6 +17,11 @@ export function initHBE() {
   const encryptedData = dataElement.innerText;
   const HmacDigist = dataElement.dataset["hmacdigest"];
 
+  // 加密文章初始状态：强制隐藏目录和切换按钮（使用内联 JS 确保优先级最高）
+  document.querySelectorAll(".toc-content-container, .page-aside-toggle").forEach((el) => {
+    el.style.setProperty("display", "none", "important");
+  });
+
   function hexToArray(s) {
     return new Uint8Array(
       s.match(/[\da-f]{2}/gi).map((h) => {
@@ -233,6 +238,40 @@ export function initHBE() {
           }
         });
 
+        // 解密成功后显示目录和切换按钮
+        // 1. 移除注入的 CSS 隐藏样式
+        const hideStyle = document.getElementById("hbe-toc-hide");
+        if (hideStyle) {
+          hideStyle.remove();
+        }
+        // 2. 移除 JS 内联的 !important 样式
+        document.querySelectorAll(".toc-content-container, .page-aside-toggle").forEach((el) => {
+          el.style.removeProperty("display");
+        });
+        // 3. 直接设置显示状态，确保目录和切换按钮可见
+        const tocContainer = document.querySelector(".toc-content-container");
+        if (tocContainer) {
+          tocContainer.style.display = "";
+        }
+        const toggleBar = document.querySelector(".page-aside-toggle");
+        if (toggleBar) {
+          toggleBar.style.display = "";
+          // 将图标类添加到内层 <i> 元素，与外层 <li> 区分，避免图标重复
+          const toggleIcon = toggleBar.querySelector("i");
+          if (toggleIcon) {
+            toggleIcon.className = "fa-regular fa-indent";
+          }
+        }
+        // 4. 添加 show-toc / has-toc 类，与主题样式匹配
+        const postPageContainer = document.querySelector(".post-page-container");
+        if (postPageContainer) {
+          postPageContainer.classList.add("show-toc");
+        }
+        const mainContent = document.querySelector(".main-content");
+        if (mainContent) {
+          mainContent.classList.add("has-toc");
+        }
+        // 5. 触发重新初始化，让 TOC 滚动高亮生效
         window.dispatchEvent(new CustomEvent("redefine:page:refresh"));
 
         // trigger event
